@@ -8,6 +8,8 @@ message = input("Enter a message: ")
 
 print("Your message backwards is:", message[::-1])
 
+input("\n\nPress enter to exit...")
+
 #Method 2
 #str = ""
 #for letter in message:

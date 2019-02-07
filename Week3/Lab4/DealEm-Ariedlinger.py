@@ -6,8 +6,21 @@
 
 import random
 
-players = int(input("How many people will be playing? "))
-handSize = int(input("How many cards should be in each players hand? "))
+#Gurantee proper numbers are inputed
+def getNumber(output):
+    number = -1
+    while number < 0:
+        try:
+            number = int(input(output))
+            if number < 0:
+                print("Not a valid number, try again")
+        except ValueError:
+            print("Not a valid number, try again")
+
+    return number
+
+players = getNumber("How many people will be playing? ")
+handSize = getNumber("How many cards should be in each players hand? ")
 
 SUITS = ('c', 'h', 's', 'd')
 CARDVALUES = ('A', '2', '3', '4','5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
@@ -30,4 +43,4 @@ for hand in hands:
     print(hand)
   
         
-
+input("\n\nPress enter to exit...")

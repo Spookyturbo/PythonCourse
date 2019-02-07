@@ -58,5 +58,5 @@ for hand in hands:
     print("\n")
     print(hand)
     
-        
+input("\n\nPress enter to exit...")
 
