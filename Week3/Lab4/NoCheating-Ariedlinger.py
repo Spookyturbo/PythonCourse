@@ -1,8 +1,8 @@
-#DealEm
+#NoCheating
 #Andy Riedlinger
 #February 7th, 2019
 #
-#Deals hands of cards to players from a deck (Duplicates allowed)
+#Deals hands of cards to players from a deck (NO DUPLICATES)
 
 import random
 
