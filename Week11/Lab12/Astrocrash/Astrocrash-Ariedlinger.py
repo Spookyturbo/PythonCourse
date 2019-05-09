@@ -4,7 +4,7 @@
 #
 #The popular game asteroids remade
 
-from livewires import games, color
+from superwires import games, color
 import random
 import math
 
@@ -42,7 +42,53 @@ class Collider(Wrapper):
             self.die()
 
 class Asteroid(Wrapper):
-    pass
+    """An asteroid which floats across the screen."""
+    SMALL = 1
+    MEDIUM = 2
+    LARGE = 3
+    images = {SMALL : games.load_image("./Images/asteroid_small.bmp"),
+              MEDIUM : games.load_image("./Images/asteroid_med.bmp"),
+              LARGE : games.load_image("./Images/asteroid_big.bmp") }
+
+    SPEED = 2
+    SPAWN = 2
+
+    POINTS = 30
+    total = 0
+
+    def __init__(self, game, x, y, size):
+        """Initialize asteroid sprite"""
+        super().__init__(image = Asteroid.images[size],
+                         x = x, y = y,
+                         dx = random.choice([1, -1]) * Asteroid.SPEED * random.random()/size,
+                         dy = random.choice([1, -1]) * Asteroid.SPEED * random.random()/size)
+
+        self.size = size
+        self.game = game
+        Asteroid.total += 1
+
+
+    def die(self):
+        """Destroy asteroid"""
+        #If asteroid isnt smalle, replace with two smaller asteroids
+        if self.size != Asteroid.SMALL:
+            for i in range(Asteroid.SPAWN):
+                new_asteroid = Asteroid(game = self.game,
+                                        x = self.x,
+                                        y = self.y,
+                                        size = self.size - 1)
+                games.screen.add(new_asteroid)
+
+        super().die()
+        
+        Asteroid.total -= 1
+        self.game.score.value += int(Asteroid.POINTS / self.size)
+        self.game.score.right = games.screen.width - 10
+
+        if Asteroid.total == 0:
+            self.game.advance()
+        
+
 
 class Ship(Collider):
     """The players ship"""
@@ -197,24 +243,24 @@ class Game(object):
         BUFFER = 150
 
         #create new asteroids
-##        for i in range(self.level):
-##            x_min = random.randrange(BUFFER)
-##            y_min = BUFFER - x_min
-##
-##            x_distance = random.randrange(x_min, games.screen.width - x_min)
-##            y_distance = random.randrange(y_min, games.screen.height - y_min)
-##
-##            x = self.ship.x + x_distance
-##            y = self.ship.y + y_distance
-##
-##            #Wrap around screen if necessary
-##            x %= games.screen.width
-##            y %= games.screen.height
-##
-##            new_asteroid = Asteroid(game = self,
-##                                    x = x, y = y,
-##                                    size = Asteroid.LARGE)
-##            games.screen.add(new_asteroid)
+        for i in range(self.level):
+            x_min = random.randrange(BUFFER)
+            y_min = BUFFER - x_min
+
+            x_distance = random.randrange(x_min, games.screen.width - x_min)
+            y_distance = random.randrange(y_min, games.screen.height - y_min)
+
+            x = self.ship.x + x_distance
+            y = self.ship.y + y_distance
+
+            #Wrap around screen if necessary
+            x %= games.screen.width
+            y %= games.screen.height
+
+            new_asteroid = Asteroid(game = self,
+                                    x = x, y = y,
+                                    size = Asteroid.LARGE)
+            games.screen.add(new_asteroid)
 
         #display level number
         level_message = games.Message(value = "Level " + str(self.level),
